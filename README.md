@@ -1,5 +1,7 @@
 # あり本付属の問題を解いていきましょう。
 
+[![](https://github.com/ngtkana/aribook/workflows/Rust/badge.svg)](https://github.com/ngtkana/aribook/actions)
+
 ## レポジトリの運用
 
 ### 方針
