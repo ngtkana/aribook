@@ -1,0 +1,5 @@
+[workspace]
+members = [
+    "proconcli",
+    "sandbox_1_1_1_kujibiki"
+]
