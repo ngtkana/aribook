@@ -1,28 +1,2 @@
 [workspace]
-members = [
-    "proconcli",
-    "chap2_1_subset_sum_problem",
-    "chap2_1_lake_counting",
-    "chap2_1_shortest_path_in_maze",
-    "chap2_2_problem_of_coins",
-    "chap2_2_interval_scheduling_problem",
-    "chap2_2_best_cow_line",
-    "chap2_2_sarumans_army",
-    "chap2_2_fence_repair",
-    "chap2_3_01_knapsack_recursive",
-    "chap2_3_01_knapsack_dp",
-    "chap2_3_01_knapsack_another_dp",
-    "chap2_3_longest_common_sequence",
-    "chap2_3_unbounded_knapsack",
-    "chap2_3_01_knapsack_inline",
-    "chap2_3_unbounded_knapsack_inline",
-    "chap2_3_01_knapsack_by_value",
-    "chap2_3_01_knapsack_by_value_inline",
-    "chap2_3_bounded_subset_sum_problem",
-    "chap2_3_bounded_subset_sum_problem_inline",
-    "chap2_3_longest_increasing_sequence_brute",
-    "chap2_3_longest_increasing_sequence_fast",
-    "chap2_3_number_of_partitions",
-    "chap2_3_number_of_bounded_multichoice",
-    "sandbox_1_1_1_kujibiki"
-]
+members = [ "crates/chap*/*" ]
