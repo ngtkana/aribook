@@ -4,5 +4,10 @@ members = [
     "chap2_1_subset_sum_problem",
     "chap2_1_lake_counting",
     "chap2_1_shortest_path_in_maze",
+    "chap2_2_problem_of_coins",
+    "chap2_2_interval_scheduling_problem",
+    "chap2_2_best_cow_line",
+    "chap2_2_sarumans_army",
+    "chap2_2_fence_repair",
     "sandbox_1_1_1_kujibiki"
 ]
