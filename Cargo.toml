@@ -20,5 +20,9 @@ members = [
     "chap2_3_01_knapsack_by_value_inline",
     "chap2_3_bounded_subset_sum_problem",
     "chap2_3_bounded_subset_sum_problem_inline",
+    "chap2_3_longest_increasing_sequence_brute",
+    "chap2_3_longest_increasing_sequence_fast",
+    "chap2_3_number_of_partitions",
+    "chap2_3_number_of_bounded_multichoice",
     "sandbox_1_1_1_kujibiki"
 ]
