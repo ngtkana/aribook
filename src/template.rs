@@ -6,8 +6,8 @@ fn main() {
 }
 
 #[cfg(test)]
-mod samples {
-    const BIN: &str = "@BIN";
+mod @CHAP_@PROBLEM_tests {
+    const BIN: &str = "@CHAP_@PROBLEM";
 
     fn test_sample(input: &str, output: &str) {
         proconcli::test_sample(input, output, BIN);
