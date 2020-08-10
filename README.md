@@ -34,3 +34,4 @@
 
 - `generate.sh` をしたときに、`README.md` に自動でリンクを追加していきたいです。
 - `generate.hs` をしたときに、work space root の `Cargo.toml` に自動で member として追加したいです。
+- crate の rename がしたいです。
