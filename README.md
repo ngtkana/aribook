@@ -10,17 +10,22 @@
 
 ### 作り方
 
-`generate.sh ${CRATE_NAME}` で作れるようにしています。
+`generate.sh ${CHAP_NAME} ${PROBLEM_NAME}` で作れるようにしています。
 
 これが自動で行われます。
 
+- ディレクトリの追加
 - bin crate の追加
 - `proconio`, `proconcli` への依存の追加 (via `cargo-edit`)
-- `src/main` へのテンプレートのコピーができます。(from `src/tempalte.rs`, via `cat` and `sed`)
+- `src/main`, `Cargo.toml` へのテンプレートのコピーができます。
+    - テンプレートは `src` 以下にあります。
 
-手動で行う必要のあることです。
+### 仕様
 
-- Work space root の `Cargo.toml` への member の追加です。
+- Crate のディレクトリは、`crates/${CHAP_NAME}/${PROBLEM_NAME}` です。
+- Crate のバイナリ名は、`${CHAP_NAME}_${PROBLEM_NAME}` です。
+- Crate 直下のテストのモジュール名は、`${CHAP_NAME}_${PROBLEM_NAME}_test` です。
+    - `chap_2_3` 以前はテストのお名前が違うので、気が向いたら移植です。
 
 
 ### テスト
@@ -38,5 +43,4 @@
 ## 欲しい機能
 
 - `generate.sh` をしたときに、`README.md` に自動でリンクを追加していきたいです。
-- `generate.hs` をしたときに、work space root の `Cargo.toml` に自動で member として追加したいです。
 - 機能が増えてきたら `clap` などで集約したいです。
