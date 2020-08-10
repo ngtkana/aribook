@@ -61,7 +61,7 @@ fn main() {
 
 #[cfg(test)]
 mod samples {
-    const BIN: &str = "chap2_3_01knapsack_another_dp";
+    const BIN: &str = "chap2_3_01_knapsack_another_dp";
 
     fn test_sample(input: &str, output: &str) {
         proconcli::test_sample(input, output, BIN);

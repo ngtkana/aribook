@@ -28,7 +28,7 @@ fn main() {
 
 #[cfg(test)]
 mod samples {
-    const BIN: &str = "chap2_3_01knapsack_recursive";
+    const BIN: &str = "chap2_3_01_knapsack_recursive";
 
     fn test_sample(input: &str, output: &str) {
         proconcli::test_sample(input, output, BIN);

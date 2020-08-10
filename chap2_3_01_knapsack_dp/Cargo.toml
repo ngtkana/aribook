@@ -1,5 +1,5 @@
 [package]
-name = "chap2_3_01knapsack_recursive"
+name = "chap2_3_01_knapsack_dp"
 version = "0.1.0"
 authors = ["ngtkana <ngtkana@gmail.com>"]
 edition = "2018"
