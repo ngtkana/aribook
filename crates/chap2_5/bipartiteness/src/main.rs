@@ -14,10 +14,8 @@ fn main() {
                 if cx == cy {
                     return false;
                 }
-            } else {
-                if !dfs(y, !cx, color, g) {
-                    return false;
-                }
+            } else if !dfs(y, !cx, color, g) {
+                return false;
             }
         }
         true

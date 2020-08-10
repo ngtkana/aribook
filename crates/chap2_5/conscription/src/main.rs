@@ -1,6 +1,7 @@
 use proconio::input;
 use std::cmp::Reverse;
 
+#[allow(clippy::many_single_char_names)]
 fn main() {
     input!(n: usize, m: usize, q: usize, uvw: [(usize, usize, u64); q]);
     let mut g = vec![vec![]; n + m];

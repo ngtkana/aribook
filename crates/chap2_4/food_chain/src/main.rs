@@ -65,6 +65,7 @@ mod union_find {
 }
 // }}}
 
+#[allow(clippy::many_single_char_names)]
 fn main() {
     input!(n: usize, q: usize);
     let mut uf = union_find::UnionFind::with_size(3 * n);

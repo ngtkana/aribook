@@ -6,7 +6,7 @@ fn main() {
     dp[0][0] = Some(0);
     for (i, &x) in a.iter().enumerate() {
         for j in 0..=sum {
-            dp[i + 1][j] = if let Some(_) = dp[i][j] {
+            dp[i + 1][j] = if dp[i][j].is_some() {
                 Some(m[i])
             } else {
                 j.checked_sub(x)

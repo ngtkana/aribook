@@ -1,11 +1,12 @@
 use proconio::input;
 
+#[allow(clippy::many_single_char_names)]
 fn main() {
     input!(h: usize, w: usize, g: [proconio::marker::Chars; h]);
     let find_char = |c: char| -> (usize, usize) {
-        for i in 0..h {
-            for j in 0..w {
-                if g[i][j] == c {
+        for (i, v) in g.iter().enumerate() {
+            for (j, &x) in v.iter().enumerate() {
+                if x == c {
                     return (i, j);
                 }
             }

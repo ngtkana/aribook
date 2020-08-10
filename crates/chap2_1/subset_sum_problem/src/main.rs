@@ -16,7 +16,7 @@ fn main() {
     let ans = dfs(&a);
     println!(
         "{}",
-        if ans.iter().find(|&&x| x == k).is_some() {
+        if ans.iter().any(|&x| x == k) {
             "Yes"
         } else {
             "No"

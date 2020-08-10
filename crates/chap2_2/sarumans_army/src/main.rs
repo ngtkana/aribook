@@ -1,5 +1,6 @@
 use proconio::input;
 
+#[allow(clippy::many_single_char_names)]
 fn main() {
     input!(n: usize, d: u32, a: [u32; n]);
     let mut ans = 0;
