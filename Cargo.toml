@@ -1,5 +1,8 @@
 [workspace]
 members = [
     "proconcli",
+    "chap2_1_subset_sum_problem",
+    "chap2_1_lake_counting",
+    "chap2_1_shortest_path_in_maze",
     "sandbox_1_1_1_kujibiki"
 ]
