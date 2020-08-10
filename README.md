@@ -30,8 +30,13 @@
 すると、`cargo-test` が通ることが、サンプルが通ることを保証します。
 
 
+### 便利機能
+
+- crate の copy ができるようになりました。
+
+
 ## 欲しい機能
 
 - `generate.sh` をしたときに、`README.md` に自動でリンクを追加していきたいです。
 - `generate.hs` をしたときに、work space root の `Cargo.toml` に自動で member として追加したいです。
-- crate の rename がしたいです。
+- 機能が増えてきたら `clap` などで集約したいです。
