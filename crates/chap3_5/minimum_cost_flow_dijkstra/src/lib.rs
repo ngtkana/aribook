@@ -113,7 +113,7 @@ impl MinCostFlowDijkstra {
         });
     }
 
-    fn min_cap_flow_along_path(&mut self, s: usize, path: &[usize]) -> u32 {
+    pub fn min_cap_flow_along_path(&mut self, s: usize, path: &[usize]) -> u32 {
         let mut now = s;
         path.iter()
             .rev()
@@ -126,7 +126,18 @@ impl MinCostFlowDijkstra {
             .unwrap()
     }
 
-    fn push_along_path(&mut self, s: usize, f: u32, path: &[usize]) {
+    pub fn restore_vertex_sequence_of_path(&self, s: usize, path: &[usize]) -> Vec<usize> {
+        let mut now = s;
+        let mut ans = vec![s];
+        for &i in path.iter().rev() {
+            let &Edge { to, .. } = &self.graph[now][i];
+            ans.push(to);
+            now = to;
+        }
+        ans
+    }
+
+    pub fn push_along_path(&mut self, s: usize, f: u32, path: &[usize]) {
         let mut now = s;
         for &i in path.iter().rev() {
             let (to, rev) = {
