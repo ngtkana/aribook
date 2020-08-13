@@ -1,48 +1,4 @@
 #![allow(clippy::many_single_char_names)]
-// dbg {{{
-#[allow(dead_code)]
-mod dbg {
-    use std::fmt::{Debug, Formatter};
-
-    #[derive(Clone)]
-    pub struct Tabular<'a, T: Debug>(pub &'a [T]);
-    impl<'a, T: Debug> Debug for Tabular<'a, T> {
-        fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
-            for i in 0..self.0.len() {
-                writeln!(f, "{:2} | {:?}", i, &self.0[i])?;
-            }
-            Ok(())
-        }
-    }
-
-    #[derive(Clone)]
-    pub struct BooleanTable<'a>(pub &'a [Vec<bool>]);
-    impl<'a> Debug for BooleanTable<'a> {
-        fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
-            for i in 0..self.0.len() {
-                writeln!(f, "{:2} | {:?}", i, BooleanSlice(&self.0[i]))?;
-            }
-            Ok(())
-        }
-    }
-
-    #[derive(Clone)]
-    pub struct BooleanSlice<'a>(pub &'a [bool]);
-    impl<'a> Debug for BooleanSlice<'a> {
-        fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
-            write!(
-                f,
-                "{}",
-                self.0
-                    .iter()
-                    .map(|&b| if b { "1 " } else { "0 " })
-                    .collect::<String>()
-            )?;
-            Ok(())
-        }
-    }
-}
-// }}}
 use std::ops::{Add, AddAssign, Sub, SubAssign};
 
 macro_rules! impl_dinic_value_integer {
@@ -192,7 +148,8 @@ impl<Value: DinicValue> Dinic<Value> {
             if from == t {
                 return f;
             }
-            while env.iter[from] != me.graph[from].len() {
+            let orig_iter = env.iter[from];
+            while {
                 let Edge { to, cap, .. } = me.graph[from][env.iter[from]];
                 if env.level[from] < env.level[to] {
                     let d = dfs(me, to, t, f.min(cap), env, path);
@@ -202,7 +159,11 @@ impl<Value: DinicValue> Dinic<Value> {
                     }
                 }
                 env.iter[from] += 1;
-            }
+                if env.iter[from] == me.graph[from].len() {
+                    env.iter[from] = 0;
+                }
+                env.iter[from] != orig_iter
+            } {}
             Value::zero()
         }
         let mut path = Vec::new();
@@ -228,6 +189,7 @@ impl<Value: DinicValue> Dinic<Value> {
         let mut flow = Value::zero();
         loop {
             let level = self.calc_level(s);
+
             if level[t] == std::u32::MAX {
                 return flow;
             }
