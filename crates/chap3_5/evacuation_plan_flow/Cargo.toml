@@ -1,0 +1,12 @@
+[package]
+name = "chap3_5_evacuation_plan_flow"
+version = "0.1.0"
+authors = ["ngtkana <ngtkana@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+proconio = "0.4.1"
+proconcli = { path = "../../proconcli" }
+chap3_5_minimum_cost_flow_dijkstra = { path = "../minimum_cost_flow_dijkstra" }

@@ -108,7 +108,7 @@ impl MinCostFlow {
         });
     }
 
-    fn find_shortest_path_bellmann_ford(&self, s: usize, t: usize) -> ShortestPathResult {
+    pub fn find_shortest_path_bellmann_ford(&self, s: usize, t: usize) -> ShortestPathResult {
         fn relax(me: &MinCostFlow, table: &mut [Option<DistWithPredecessor>]) -> bool {
             let mut update = false;
             for x in 0..me.graph.len() {
@@ -166,7 +166,7 @@ impl MinCostFlow {
         }
     }
 
-    fn min_cap_flow_along_path(&mut self, s: usize, path: &[usize]) -> u32 {
+    pub fn min_cap_flow_along_path(&mut self, s: usize, path: &[usize]) -> u32 {
         let mut now = s;
         path.iter()
             .rev()
@@ -179,7 +179,7 @@ impl MinCostFlow {
             .unwrap()
     }
 
-    fn push_along_path(&mut self, s: usize, f: u32, path: &[usize]) {
+    pub fn push_along_path(&mut self, s: usize, f: u32, path: &[usize]) {
         let mut now = s;
         for &i in path.iter().rev() {
             let (to, rev) = {

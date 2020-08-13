@@ -6,21 +6,66 @@ pub struct Edge {
     rev: usize,
 }
 
+#[derive(Clone)]
+pub struct PrettyEdge {
+    to: usize,
+    flow: u32,
+    cap: u32,
+}
+
+impl std::fmt::Debug for PrettyEdge {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "({}, {}/{})", self.to, self.flow, self.cap)
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct FordFulkerson {
     graph: Vec<Vec<Edge>>,
+    pub edge_keys: Vec<(usize, usize)>,
 }
 
 impl FordFulkerson {
     pub fn with_len(len: usize) -> Self {
         Self {
             graph: vec![Vec::new(); len],
+            edge_keys: Vec::new(),
         }
+    }
+
+    pub fn pretty(&self) -> Vec<Vec<PrettyEdge>> {
+        let hash_set = self
+            .edge_keys
+            .iter()
+            .cloned()
+            .collect::<std::collections::HashSet<_>>();
+        self.graph
+            .iter()
+            .enumerate()
+            .map(|(i, v)| {
+                v.iter()
+                    .enumerate()
+                    .filter_map(|(j, &Edge { to, cap, rev })| {
+                        if hash_set.get(&(i, j)).is_some() {
+                            let revcap = self.graph[to][rev].cap;
+                            Some(PrettyEdge {
+                                to,
+                                flow: revcap,
+                                cap: cap + revcap,
+                            })
+                        } else {
+                            None
+                        }
+                    })
+                    .collect()
+            })
+            .collect()
     }
 
     pub fn add_edge(&mut self, from: usize, to: usize, cap: u32) {
         let from_len = self.graph[from].len();
         let to_len = self.graph[to].len();
+        self.edge_keys.push((from, from_len));
         self.graph[from].push(Edge {
             to,
             cap,

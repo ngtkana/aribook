@@ -1,10 +1,10 @@
 #![allow(clippy::many_single_char_names)]
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct Edge {
-    to: usize,
-    cap: u32,
-    cost: i32,
-    rev: usize,
+    pub to: usize,
+    pub cap: u32,
+    pub cost: i32,
+    pub rev: usize,
 }
 
 #[derive(Clone, Eq, PartialEq)]
@@ -51,7 +51,7 @@ pub struct Predecessor {
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct MinCostFlowDijkstra {
-    graph: Vec<Vec<Edge>>,
+    pub graph: Vec<Vec<Edge>>,
     potential: Vec<u32>,
     pub edge_keys: Vec<(usize, usize)>,
 }

@@ -43,29 +43,61 @@ mod dbg {
     }
 }
 // }}}
+use std::ops::{Add, AddAssign, Sub, SubAssign};
+
+macro_rules! impl_dinic_value_integer {
+    ($($ty:ident,)*) => {$(
+        impl DinicValue for $ty {
+            fn zero() -> Self { 0 }
+            fn max_value() -> Self { std::$ty::MAX }
+        }
+    )*}
+}
+
+impl_dinic_value_integer! {
+    u8, u16, u32, u64, u128, usize,
+    i8, i16, i32, i64, i128, isize,
+}
+
+pub trait DinicValue:
+    Sized
+    + std::fmt::Debug
+    + Copy
+    + Clone
+    + Add<Output = Self>
+    + AddAssign
+    + Sub<Output = Self>
+    + SubAssign
+    + std::cmp::Ord
+{
+    fn zero() -> Self;
+
+    fn max_value() -> Self;
+}
+
 #[derive(Debug, Clone)]
-pub struct Edge {
+pub struct Edge<Value: DinicValue> {
     to: usize,
-    cap: u32,
+    cap: Value,
     rev: usize,
 }
 
 #[derive(Clone)]
-pub struct PrettyEdge {
+pub struct PrettyEdge<Value: DinicValue> {
     to: usize,
-    flow: u32,
-    cap: u32,
+    flow: Value,
+    cap: Value,
 }
 
-impl std::fmt::Debug for PrettyEdge {
+impl<Value: DinicValue> std::fmt::Debug for PrettyEdge<Value> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "({}, {}/{})", self.to, self.flow, self.cap)
+        write!(f, "({:?}, {:?}/{:?})", self.to, self.flow, self.cap)
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct Dinic {
-    pub graph: Vec<Vec<Edge>>,
+pub struct Dinic<Value: DinicValue> {
+    pub graph: Vec<Vec<Edge<Value>>>,
     pub edge_keys: Vec<(usize, usize)>,
 }
 
@@ -75,7 +107,7 @@ struct Env {
     iter: Vec<usize>,
 }
 
-impl Dinic {
+impl<Value: DinicValue> Dinic<Value> {
     pub fn with_len(len: usize) -> Self {
         Self {
             graph: vec![Vec::new(); len],
@@ -83,7 +115,7 @@ impl Dinic {
         }
     }
 
-    pub fn pretty(&self) -> Vec<Vec<PrettyEdge>> {
+    pub fn pretty(&self) -> Vec<Vec<PrettyEdge<Value>>> {
         let hash_set = self
             .edge_keys
             .iter()
@@ -112,7 +144,7 @@ impl Dinic {
             .collect()
     }
 
-    pub fn add_edge(&mut self, from: usize, to: usize, cap: u32) {
+    pub fn add_edge(&mut self, from: usize, to: usize, cap: Value) {
         let from_len = self.graph[from].len();
         let to_len = self.graph[to].len();
         self.edge_keys.push((from, from_len));
@@ -123,7 +155,7 @@ impl Dinic {
         });
         self.graph[to].push(Edge {
             to: from,
-            cap: 0,
+            cap: Value::zero(),
             rev: from_len,
         });
     }
@@ -134,7 +166,7 @@ impl Dinic {
         level[s] = 0;
         while let Some(from) = queue.pop_front() {
             for &Edge { to, cap, .. } in &self.graph[from] {
-                if cap != 0 && level[to] == std::u32::MAX {
+                if cap != Value::zero() && level[to] == std::u32::MAX {
                     queue.push_back(to);
                     level[to] = level[from] + 1;
                 }
@@ -143,15 +175,20 @@ impl Dinic {
         level
     }
 
-    fn find_augumenting_path_dinic(&self, s: usize, t: usize, env: &mut Env) -> (u32, Vec<usize>) {
-        fn dfs(
-            me: &Dinic,
+    fn find_augumenting_path_dinic(
+        &self,
+        s: usize,
+        t: usize,
+        env: &mut Env,
+    ) -> (Value, Vec<usize>) {
+        fn dfs<Value: DinicValue>(
+            me: &Dinic<Value>,
             from: usize,
             t: usize,
-            f: u32,
+            f: Value,
             env: &mut Env,
             path: &mut Vec<usize>,
-        ) -> u32 {
+        ) -> Value {
             if from == t {
                 return f;
             }
@@ -159,21 +196,21 @@ impl Dinic {
                 let Edge { to, cap, .. } = me.graph[from][env.iter[from]];
                 if env.level[from] < env.level[to] {
                     let d = dfs(me, to, t, f.min(cap), env, path);
-                    if d != 0 {
+                    if d != Value::zero() {
                         path.push(env.iter[from]);
                         return d;
                     }
                 }
                 env.iter[from] += 1;
             }
-            0
+            Value::zero()
         }
         let mut path = Vec::new();
-        let f = dfs(&self, s, t, std::u32::MAX, env, &mut path);
+        let f = dfs(&self, s, t, Value::max_value(), env, &mut path);
         (f, path)
     }
 
-    fn push_along_path(&mut self, s: usize, t: usize, f: u32, path: &[usize]) {
+    fn push_along_path(&mut self, s: usize, t: usize, f: Value, path: &[usize]) {
         let mut now = s;
         for &i in path.iter().rev() {
             let (to, rev) = {
@@ -187,8 +224,8 @@ impl Dinic {
         assert_eq!(now, t);
     }
 
-    pub fn run(&mut self, s: usize, t: usize) -> u32 {
-        let mut flow = 0;
+    pub fn run(&mut self, s: usize, t: usize) -> Value {
+        let mut flow = Value::zero();
         loop {
             let level = self.calc_level(s);
             if level[t] == std::u32::MAX {
@@ -200,7 +237,7 @@ impl Dinic {
             };
             loop {
                 let (f, path) = self.find_augumenting_path_dinic(s, t, &mut env);
-                if f == 0 {
+                if f == Value::zero() {
                     break;
                 }
                 self.push_along_path(s, t, f, &path);
@@ -216,7 +253,7 @@ mod chap3_5_dinic_tests {
 
     #[test]
     fn test_tutorial() {
-        let mut dinic = Dinic::with_len(5);
+        let mut dinic = Dinic::<u32>::with_len(5);
         dinic.add_edge(0, 1, 10);
         dinic.add_edge(0, 2, 2);
         dinic.add_edge(1, 2, 6);
