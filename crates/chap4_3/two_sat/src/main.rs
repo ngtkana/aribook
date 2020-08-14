@@ -15,7 +15,7 @@ fn main() {
     } else {
         println!("YES");
         for (&x, &y) in cmp[..n].iter().zip(cmp[n..].iter()) {
-            println!("{}", if x < y { "true" } else { "false" });
+            println!("{}", if x > y { "true" } else { "false" });
         }
     }
 }

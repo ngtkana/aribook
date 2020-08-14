@@ -34,7 +34,11 @@ impl Scc {
         }
         let mut used = vec![false; n];
         let mut ord = Vec::new();
-        dfs_forward(0, &mut used, &mut ord, &self.graph);
+        for i in 0..n {
+            if !used[i] {
+                dfs_forward(i, &mut used, &mut ord, &self.graph);
+            }
+        }
 
         fn dfs_backward(x: usize, used: &mut [bool], members: &mut Vec<usize>, g: &[Vec<usize>]) {
             used[x] = true;
@@ -48,13 +52,12 @@ impl Scc {
         }
         let mut used = vec![false; n];
         let mut ans = Vec::new();
-        for i in 0..n {
-            if used[i] {
-                continue;
+        for &i in ord.iter().rev() {
+            if !used[i] {
+                let mut members = Vec::new();
+                dfs_backward(i, &mut used, &mut members, &self.reverse_graph);
+                ans.push(members);
             }
-            let mut members = Vec::new();
-            dfs_backward(i, &mut used, &mut members, &self.reverse_graph);
-            ans.push(members);
         }
         ans
     }
@@ -89,7 +92,7 @@ mod chap4_3_scc_tests {
         scc.add_edge(0, 1);
         scc.add_edge(2, 1);
         scc.add_edge(2, 3);
-        let expected = vec![vec![0], vec![1], vec![2], vec![3]];
+        let expected = vec![vec![2], vec![3], vec![0], vec![1]];
         assert_eq!(scc.run(), expected);
     }
 }

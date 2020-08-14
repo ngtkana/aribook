@@ -1,0 +1,12 @@
+[package]
+name = "chap4_3_priest_johns_busiest_day"
+version = "0.1.0"
+authors = ["ngtkana <ngtkana@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+proconio = "0.4.1"
+proconcli = { path = "../../proconcli" }
+chap4_3_scc = { path = "../scc" }
