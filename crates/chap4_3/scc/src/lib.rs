@@ -58,6 +58,15 @@ impl Scc {
         }
         ans
     }
+
+    pub fn convert_into_belongingness_table(cmp: Vec<Vec<usize>>) -> Vec<usize> {
+        let len = cmp.iter().map(|v| v.len()).sum::<usize>();
+        let mut ans = vec![0; len];
+        for (i, v) in cmp.iter().enumerate() {
+            v.iter().for_each(|&x| ans[x] = i);
+        }
+        ans
+    }
 }
 
 #[cfg(test)]
