@@ -1,9 +1,9 @@
 #![allow(clippy::many_single_char_names)]
 
-pub fn extgcd(a: i32, b: i32, x: &mut i32, y: &mut i32) -> i32 {
+pub fn extgcd(a: u64, b: u64, x: &mut i64, y: &mut i64) -> u64 {
     if b != 0 {
         let d = extgcd(b, a % b, y, x);
-        *y -= a / b * *x;
+        *y -= (a / b) as i64 * *x;
         d
     } else {
         *x = 1;
@@ -12,11 +12,16 @@ pub fn extgcd(a: i32, b: i32, x: &mut i32, y: &mut i32) -> i32 {
     }
 }
 
-pub fn mod_inverse(a: i32, m: i32) -> i32 {
+pub fn mod_inverse(a: u64, m: u64) -> u64 {
     let mut x = 0;
     let mut y = 0;
     extgcd(a, m, &mut x, &mut y);
-    (m + x % m) % m
+    x %= m as i64;
+    if 0 <= x {
+        x as u64
+    } else {
+        (x + m as i64) as u64
+    }
 }
 
 #[cfg(test)]
