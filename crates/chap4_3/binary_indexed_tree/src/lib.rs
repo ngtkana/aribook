@@ -1,4 +1,104 @@
 #![allow(clippy::many_single_char_names)]
+// dbg {{{
+#[allow(dead_code)]
+mod dbg {
+    #[macro_export]
+    macro_rules! lg {
+        () => {
+            $crate::eprintln!("[{}:{}]", $crate::file!(), $crate::line!());
+        };
+        ($val:expr) => {
+            match $val {
+                tmp => {
+                    eprintln!("[{}:{}] {} = {:?}",
+                        file!(), line!(), stringify!($val), &tmp);
+                    tmp
+                }
+            }
+        };
+        ($val:expr,) => { lg!($val) };
+        ($($val:expr),+ $(,)?) => {
+            ($(lg!($val)),+,)
+        };
+    }
+
+    #[macro_export]
+    macro_rules! msg {
+            () => {
+                compile_error!();
+            };
+            ($msg:expr) => {
+                $crate::eprintln!("[{}:{}][{}]", $crate::file!(), $crate::line!(), $msg);
+            };
+            ($msg:expr, $val:expr) => {
+                match $val {
+                    tmp => {
+                        eprintln!("[{}:{}][{}] {} = {:?}",
+                            file!(), line!(), $msg, stringify!($val), &tmp);
+                        tmp
+                    }
+                }
+            };
+            ($msg:expr, $val:expr,) => { msg!($msg, $val) };
+            ($msg:expr, $($val:expr),+ $(,)?) => {
+                ($(msg!($msg, $val)),+,)
+            };
+        }
+
+    #[macro_export]
+    macro_rules! tabular {
+        ($val:expr) => {
+            eprintln!(
+                "[{}:{}] {}:\n{:?}",
+                file!(),
+                line!(),
+                stringify!($val),
+                crate::dbg::Tabular($val)
+            );
+        };
+    }
+
+    use std::fmt::{Debug, Formatter};
+
+    #[derive(Clone)]
+    pub struct Tabular<'a, T: Debug>(pub &'a [T]);
+    impl<'a, T: Debug> Debug for Tabular<'a, T> {
+        fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
+            for i in 0..self.0.len() {
+                writeln!(f, "{:2} | {:?}", i, &self.0[i])?;
+            }
+            Ok(())
+        }
+    }
+
+    #[derive(Clone)]
+    pub struct BooleanTable<'a>(pub &'a [Vec<bool>]);
+    impl<'a> Debug for BooleanTable<'a> {
+        fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
+            for i in 0..self.0.len() {
+                writeln!(f, "{:2} | {:?}", i, BooleanSlice(&self.0[i]))?;
+            }
+            Ok(())
+        }
+    }
+
+    #[derive(Clone)]
+    pub struct BooleanSlice<'a>(pub &'a [bool]);
+    impl<'a> Debug for BooleanSlice<'a> {
+        fn fmt(&self, f: &mut Formatter) -> std::fmt::Result {
+            write!(
+                f,
+                "{}",
+                self.0
+                    .iter()
+                    .map(|&b| if b { "1 " } else { "0 " })
+                    .collect::<String>()
+            )?;
+            Ok(())
+        }
+    }
+}
+// }}}
 
 use std::{
     fmt::Debug,
@@ -10,8 +110,15 @@ use std::{
 // - Copy を要求する？
 // - &Value: Add<Output = Value> など一式要求する？
 // - いまのまま毎回 Clone？
+#[derive(Debug, Clone)]
 pub struct BinaryIndexedTree<Value: Debug + Clone + Add<Output = Value>> {
     table: Vec<Value>,
+}
+
+impl<Value: Debug + Clone + Add<Output = Value>> Default for BinaryIndexedTree<Value> {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl<Value: Debug + Clone + Add<Output = Value>> BinaryIndexedTree<Value> {
@@ -41,11 +148,23 @@ impl<Value: Debug + Clone + Add<Output = Value>> BinaryIndexedTree<Value> {
     }
 
     pub fn sum(&self, i: usize) -> Option<Value> {
+        assert!(i <= self.table.len());
         let mut map = successors(Some(i as i32), |&i| Some(i - (i & -i)))
             .take_while(|&i| i != 0)
             .map(|i: i32| self.table[i as usize - 1].clone());
         let first = map.next()?;
         Some(map.fold(first, Add::add))
+    }
+
+    pub fn add(&mut self, i: usize, x: Value) {
+        assert!(i < self.table.len());
+        let len = self.table.len();
+        for i in successors(Some(i as i32 + 1), |&i| Some(i + (i & -i)))
+            .map(|i| (i - 1) as usize)
+            .take_while(|&i| i < len)
+        {
+            self.table[i] = self.table[i].clone() + x.clone();
+        }
     }
 }
 
@@ -62,6 +181,30 @@ impl<Value: Debug + Clone + Add<Output = Value> + Sub<Output = Value>> BinaryInd
                 end_value
             })
         }
+    }
+
+    pub fn get(&self, i: usize) -> Option<Value> {
+        if i < self.table.len() {
+            Some(if i == 0 {
+                self.sum(1).unwrap()
+            } else {
+                self.sum(i + 1).unwrap() - self.sum(i).unwrap()
+            })
+        } else {
+            None
+        }
+    }
+
+    pub fn update(&mut self, i: usize, x: Value) {
+        assert!(i < self.table.len());
+        let diff = x - self.get(i).unwrap();
+        self.add(i, diff);
+    }
+
+    pub fn collect_vec(&self) -> Vec<Value> {
+        (0..self.table.len())
+            .map(|i| self.get(i).unwrap())
+            .collect()
     }
 }
 

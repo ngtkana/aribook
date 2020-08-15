@@ -2,9 +2,9 @@
 use chap4_3_sparse_table_argmin::SparseTableArgmin;
 
 pub struct LcaRmq {
-    order: Vec<usize>,
-    spt: SparseTableArgmin<u32>,
-    start: Vec<usize>,
+    pub order: Vec<usize>,
+    pub spt: SparseTableArgmin<u32>,
+    pub start: Vec<usize>,
 }
 
 impl LcaRmq {
@@ -42,6 +42,8 @@ impl LcaRmq {
     }
 
     pub fn query(&self, u: usize, v: usize) -> usize {
+        assert!((0..self.start.len()).contains(&u));
+        assert!((0..self.start.len()).contains(&v));
         let mut u = self.start[u];
         let mut v = self.start[v];
         if u > v {
