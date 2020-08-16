@@ -2,8 +2,8 @@
 use std::{fmt::Debug, ops::Range};
 
 pub struct SparseTableArgmin<Value: Debug + Clone + Ord> {
-    table: Vec<Vec<usize>>,
-    values: Vec<Value>,
+    pub table: Vec<Vec<usize>>,
+    pub values: Vec<Value>,
 }
 
 impl<Value: Debug + Clone + Ord> SparseTableArgmin<Value> {
