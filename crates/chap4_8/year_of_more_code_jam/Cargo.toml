@@ -1,0 +1,11 @@
+[package]
+name = "chap4_8_year_of_more_code_jam"
+version = "0.1.0"
+authors = ["ngtkana <ngtkana@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+proconio = "0.4.1"
+proconcli = { path = "../../proconcli" }
