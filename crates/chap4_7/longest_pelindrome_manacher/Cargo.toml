@@ -1,0 +1,13 @@
+[package]
+name = "chap4_7_longest_pelindrome_manacher"
+version = "0.1.0"
+authors = ["ngtkana <ngtkana@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+proconio = "0.4.1"
+proconcli = { path = "../../proconcli" }
+chap4_7_manacher = { path= "../manacher" }
+itertools = "0.9.0"
