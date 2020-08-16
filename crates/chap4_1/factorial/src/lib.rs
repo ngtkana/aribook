@@ -8,8 +8,8 @@ pub struct Factorial {
 
 #[derive(Debug, Clone, Eq, PartialEq)]
 pub struct FactorialResult {
-    frac: u64,
-    power: u64,
+    pub frac: u64,
+    pub power: u64,
 }
 
 impl Factorial {
